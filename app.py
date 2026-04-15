@@ -60,7 +60,6 @@ if standings is not None:
     elif page == "📊 Team Statistiken":
         st.header("📊 Team Statistiken")
 
-        # Team auswählen
         team_names = standings['TeamName'].tolist()
         selected_team = st.selectbox("Team auswählen:", team_names)
 
@@ -68,11 +67,10 @@ if standings is not None:
         team_id = team_row['TeamID']
 
         # Metriken anzeigen
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3 = st.columns(3)
         col1.metric("Wins", int(team_row['WINS']))
         col2.metric("Losses", int(team_row['LOSSES']))
-        col3.metric("Points Diff PG", round(float(team_row['DiffPointsPG']), 1))
-        col4.metric("Opp Points PG", round(float(team_row['OppPointsPG']), 1))
+        col3.metric("Win %", f"{float(team_row['WinPCT']):.1%}")
 
         # Letzte 10 Spiele
         st.subheader(f"Letzte 10 Spiele - {selected_team}")
