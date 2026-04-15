@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 from data.nba_data import get_playoff_teams, get_team_stats, get_all_teams
 st.cache_data.clear()
 
@@ -81,6 +82,38 @@ if standings is not None:
                     gamelog[['GAME_DATE', 'MATCHUP', 'WL', 'PTS', 'REB', 'AST', 'FG_PCT']],
                     use_container_width=True
                 )
+
+                st.subheader("📈 Punkte Verlauf")
+                chart_data = gamelog[['GAME_DATE', 'MATCHUP', 'WL', 'PTS']].copy()
+
+                chart_data['GAME_DATE'] = pd.to_datetime(chart_data['GAME_DATE'])
+                chart_data = chart_data.sort_values('GAME_DATE').reset_index(drop=True)
+
+                chart_data['GEGNER'] = chart_data['MATCHUP'].str.split(' ').str[-1]
+
+                chart_data['DATUM'] = chart_data['GAME_DATE'].dt.strftime('%d.%m')
+
+                chart_data['LABEL'] = chart_data['DATUM'] + '<br>' + chart_data['GEGNER']
+
+                fig = px.bar(
+                    chart_data,
+                    x='GAME_DATE',
+                    y='PTS',
+                    color='WL',
+                    color_discrete_map={'W': '#00C851', 'L': '#ff4444'},
+                    labels={'PTS': 'Punkte', 'GAME_DATE': 'Datum', 'WL': 'Ergebnis'},
+                    title=f"Punkte letzte 10 Spiele - {selected_team}",
+                    text='PTS',
+                    hover_data=['MATCHUP']
+                )
+
+                fig.update_layout(
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    font_color='white',
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
             except Exception as e:
                 st.error(f"Fehler: {e}")
 
