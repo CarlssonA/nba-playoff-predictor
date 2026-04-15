@@ -1,5 +1,6 @@
-from nba_api.stats.endpoints import leaguestandings, teamgamelog
+from nba_api.stats.endpoints import leaguestandings, teamgamelog, playergamelog
 from nba_api.stats.static import teams
+from nba_api.stats.endpoints import commonteamroster
 import pandas as pd
 import time
 
@@ -28,3 +29,20 @@ def get_team_stats(team_id):
 
 def get_all_teams():
     return teams.get_teams()
+
+def get_team_players(team_id):
+    time.sleep(0.5)
+    roster = commonteamroster.CommonTeamRoster(
+        team_id=team_id,
+        season=SEASON
+    )
+    return roster.get_data_frames()[0]
+
+def get_player_stats(player_id):
+    time.sleep(0.5)
+    gamelog = playergamelog.PlayerGameLog(
+        player_id=player_id,
+        season=SEASON
+    )
+    df = gamelog.get_data_frames()[0]
+    return df.head(10)
