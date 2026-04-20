@@ -1,0 +1,11 @@
+{
+    "west": {
+        "seed7": "Trail Blazers",
+        "seed8": "TBD"
+    },
+    "east": {
+        "seed7": "76ers",
+        "seed8": "TBD"
+    },
+    "playin_done": false
+}
